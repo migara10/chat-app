@@ -4,6 +4,9 @@ import dotenv from 'dotenv';
 import cors from "cors";
 
 dotenv.config();
+import connectToDatabase from './database/connection.js';
+
+
 
 const app = express();
 app.use(express.json());
@@ -30,3 +33,4 @@ app.get('/chats/:id', (req, res) => {
 });
 
 app.listen(PORT, () => console.log(`Server started on: ${PORT}`));
+connectToDatabase();
