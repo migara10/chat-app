@@ -1,5 +1,8 @@
 import React from "react";
+import axios from "./../../auth/axiosInstance.js";
 
+import { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 
@@ -16,6 +19,7 @@ const Login = ({ handleLogin }) => {
       .min(4, "Password must be 4 characters"),
   });
 
+  // useFormik hook
   const formik = useFormik({
     initialValues: {
       email: "migara@gmail.com",
@@ -25,12 +29,24 @@ const Login = ({ handleLogin }) => {
     validateOnBlur: false,
     validateOnChange: false,
     onSubmit: async (values) => {
-      console.log(values);
+      loginUser(values);
     },
   });
 
+  const loginUser = async (user) => {
+    await axios
+      .post("/user/login", user)
+      .then((res) => {
+        toast.success(res.data.message);
+      })
+      .catch((error) => {
+        toast.error(error.response.data.message);
+      });
+  };
+
   return (
     <div className="container mx-auto">
+      <Toaster position="top-center" reverseOrder={false} />
       <div className="flex items-center justify-center min-h-screen">
         <div className={`${styles.glass} h-4/5  flex justify-center`}>
           <form className="py-1" onSubmit={formik.handleSubmit}>
