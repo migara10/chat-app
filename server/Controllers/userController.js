@@ -1,5 +1,6 @@
 import UserModel from "./../models/user.model.js";
-import handleError from "./errorHandler.js";
+import handleError from "../utils/errorHandler.js";
+import generateToken from '../utils/Tokens.js';
 import bcrypt from "bcrypt";
 
 const registerUser = async (req, res) => {
@@ -22,7 +23,29 @@ const registerUser = async (req, res) => {
 };
 
 const loginUser = async (req, res) => {
-  // Your login logic here
+  try {
+    const { email, password } = req.body;
+
+    // Find user by email and select only necessary fields
+    const user = await UserModel.findOne({ email }).exec();
+
+    if (!user) {
+      return res.status(400).send({ message: "Valid User Not Found." });
+    }
+
+    const accessToken = await generateToken(user, process.env.ACCESS_KEY, "10m");
+      const refreshToken = await generateToken(user, process.env.REFRESH_KEY, "1h");
+
+    const isPasswordValid = bcrypt.compare(password, user.password);
+
+    if (!isPasswordValid) {
+      return res.status(400).send({ message: "Invalid Password." });
+    }
+
+    return res.status(200).send({ message: "Login Success", user, refreshToken, accessToken });
+  } catch (error) {
+    handleError(error, res); // get error messages
+  }
 };
 
 export default {
