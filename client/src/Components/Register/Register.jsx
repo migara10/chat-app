@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import axios from "axios";
+import axios from "./../../auth/axiosInstance.js";
 
 import avatar from "./../../assets/profile.png";
 import base64 from "./../../Utils/ConvertImage";
@@ -65,7 +65,7 @@ const Register = ({ handleLogin }) => {
     });
     
     await axios
-      .post("http://localhost:5000/user/register", formData)
+      .post("/user/register", formData)
       .then((res) => {
         toast.success(res.data.message);
       })
