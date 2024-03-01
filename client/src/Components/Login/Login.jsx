@@ -22,8 +22,8 @@ const Login = ({ handleLogin }) => {
   // useFormik hook
   const formik = useFormik({
     initialValues: {
-      email: "migara@gmail.com",
-      password: "game1",
+      email: "",
+      password: "",
     },
     validationSchema,
     validateOnBlur: false,
