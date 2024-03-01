@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import axios from "axios";
+
 import avatar from "./../../assets/profile.png";
 import base64 from "./../../Utils/ConvertImage";
 
@@ -15,12 +17,13 @@ const Register = ({ handleLogin }) => {
 
   // Validation schema
   const validationSchema = Yup.object({
-    name: Yup.string().required("Book name is required!"),
+    name: Yup.string().required("name is required!"),
     email: Yup.string()
-      .required("Email required!")
-      .email("Invalid email format!"),
+      .required("Email required")
+      .email("Invalid Email format"),
     password: Yup.string()
-      .required("Password required!")
+      .required("")
+      .matches(/[a-zA-Z]/, 'Password must need one character')
       .min(4, "Password must be 8 characters"),
     conformPassword: Yup.string().oneOf(
       [Yup.ref("password"), null],
@@ -31,16 +34,16 @@ const Register = ({ handleLogin }) => {
   // useFormik hook
   const formik = useFormik({
     initialValues: {
-      name: "",
-      email: "",
-      password: null,
-      conformPassword: null,
+      name: "migara",
+      email: "migara@gmail.com",
+      password: "game1",
+      conformPassword: "game1",
     },
     validationSchema,
     validateOnBlur: false,
     validateOnChange: false,
     onSubmit: async (values) => {
-      addBook(values);
+      registerUser(values);
     },
   });
 
@@ -51,10 +54,31 @@ const Register = ({ handleLogin }) => {
     setFIle(img);
   };
 
+  const registerUser = async (user) => {
+    const { conformPassword, ...data } = user;
+
+    const formData = new FormData();
+    formData.append("file", imgUrl);
+    
+    Object.keys(data).forEach((key) => {
+      formData.append(key, data[key]);
+    });
+    
+    await axios
+      .post("http://localhost:5000/user/register", formData)
+      .then((res) => {
+        toast.success(res.data.message);
+      })
+      .catch((error) => {
+        toast.error(error.response.data.message);
+      });
+  };
+
   return (
     <div className="container mx-auto">
-      <div className="flex items-center justify-center h-auto py-6">
-        <div className={`${styles.glass} h-8/9  flex justify-center`}>
+      <Toaster position="top-center" reverseOrder={false} />
+      <div className="flex items-center justify-center min-h-screen">
+        <div className={`${styles.glass} h-4/5  flex justify-center`}>
           <form className="py-1" onSubmit={formik.handleSubmit}>
             <h1 className="text-center text-[1.6em] pt-10">Register</h1>
             <div className="flex justify-center py-2 profile">
