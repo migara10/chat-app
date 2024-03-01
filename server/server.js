@@ -2,9 +2,12 @@ import express from 'express';
 import  chats  from './data/data.js';
 import dotenv from 'dotenv';
 import cors from "cors";
+import connectToDatabase from './database/connection.js';
+
+import user from './Router/userRoute.js'
 
 dotenv.config();
-import connectToDatabase from './database/connection.js';
+
 
 
 
@@ -20,6 +23,8 @@ app.get('/', (req, res) => {
 app.get('/chats', (req, res) => {
     res.send(chats);
 });
+
+app.use('/user', user)
 
 app.get('/chats/:id', (req, res) => {
     const chat = chats.find(data => data._id === req.params.id);
