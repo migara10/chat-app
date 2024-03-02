@@ -19,5 +19,6 @@ const route = express.Router();
 
 route.post("/register", upload.single("file"), userController.registerUser);
 route.post("/login", userController.loginUser);
+route.get("/:search", userController.gelAllUsers);
 
 export default route;
