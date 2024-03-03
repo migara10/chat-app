@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from 'axios';
+import axios from './../auth/axiosInstance.js';
 
 function Chat() {
   const [chats, setChats] = useState();
@@ -10,7 +10,7 @@ function Chat() {
 
   const fetchChats = async () => {
     await axios
-      .get("http://localhost:5000/chats", {})
+      .get("/chats", {})
       .then((response) => {
         setChats(response.data);
       })
