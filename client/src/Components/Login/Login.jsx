@@ -1,5 +1,6 @@
 import React from "react";
 import axios from "./../../auth/axiosInstance.js";
+import { useNavigate } from "react-router-dom";
 
 import { Toaster } from "react-hot-toast";
 import toast from "react-hot-toast";
@@ -9,6 +10,8 @@ import * as Yup from "yup";
 import styles from "../../styles/Login.module.scss";
 
 const Login = ({ handleLogin }) => {
+  const navigate = useNavigate();
+
   // Validation schema
   const validationSchema = Yup.object({
     email: Yup.string()
@@ -33,11 +36,16 @@ const Login = ({ handleLogin }) => {
     },
   });
 
-  const loginUser = async (user) => {
+  const loginUser = async (data) => {
     await axios
-      .post("/user/login", user)
+      .post("/user/login", data)
       .then((res) => {
-        toast.success(res.data.message);
+        const { accessToken, refreshToken, message, user } = res.data;
+        localStorage.setItem("accessToken", accessToken);
+        localStorage.setItem("refreshToken", refreshToken);
+
+        toast.success(message);
+        navigate("/chats");
       })
       .catch((error) => {
         toast.error(error.response.data.message);
