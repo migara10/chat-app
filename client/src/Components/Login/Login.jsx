@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import axios from "./../../auth/axiosInstance.js";
 import { useNavigate } from "react-router-dom";
 
@@ -10,6 +10,8 @@ import * as Yup from "yup";
 import styles from "../../styles/Login.module.scss";
 
 const Login = ({ handleLogin }) => {
+  useEffect(() => {localStorage.clear()}, [])
+  
   const navigate = useNavigate();
 
   // Validation schema
@@ -43,6 +45,7 @@ const Login = ({ handleLogin }) => {
         const { accessToken, refreshToken, message, user } = res.data;
         localStorage.setItem("accessToken", accessToken);
         localStorage.setItem("refreshToken", refreshToken);
+        localStorage.setItem("user", JSON.stringify(user));
 
         toast.success(message);
         navigate("/chats");

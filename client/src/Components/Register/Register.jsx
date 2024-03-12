@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "./../../auth/axiosInstance.js";
 
 import avatar from "./../../assets/profile.png";
@@ -56,7 +56,10 @@ const Register = ({ handleLogin }) => {
 
   
 
-  const registerUser = async () => {
+  const registerUser = async (user) => {
+
+    useEffect(() => {localStorage.clear()}, []);
+    
     const formData = new FormData();
     if (imgUrl === undefined) {
       toast.error("please select image");
@@ -72,13 +75,34 @@ const Register = ({ handleLogin }) => {
       })
         .then((res) => res.json())
         .then((data) => {
-          console.log(data);
+          sendDataToDb(user, data);
         }).catch(error => {
           console.log(error)
         });
     }else{
       toast.error("please select image");
     }
+  }
+
+  const sendDataToDb = async (user, img) => {
+    const { conformPassword, ...data } = user;
+    const formData = new FormData();
+    formData.append("file", img.url);
+    formData.append("public_id", img.public_id);
+
+    
+    Object.keys(data).forEach((key) => {
+      formData.append(key, data[key]);
+    });
+
+    await axios
+      .post("/user/register", formData)
+      .then((res) => {
+        toast.success(res.data.message);
+      })
+      .catch((error) => {
+        toast.error(error.response.data.message);
+      });
   }
  /*  const registerUser = async (user) => {
     const { conformPassword, ...data } = user;
