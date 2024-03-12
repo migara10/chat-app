@@ -1,9 +1,15 @@
-import {createBrowserRouter, RouterProvider, Navigate } from "react-router-dom";
+import {
+  createBrowserRouter,
+  RouterProvider,
+  Navigate,
+} from "react-router-dom";
 import "./App.css";
 import Home from "./Components/Home";
 import Chat from "./Components/Chat";
 import axios from "axios";
-axios.defaults.url =  "http://localhost:5000";
+axios.defaults.url = "http://localhost:5000";
+
+import { CreateUser } from "./UserContext";
 
 function App() {
   // routers
@@ -22,7 +28,11 @@ function App() {
     },
   ]);
 
-  return <RouterProvider router={router}></RouterProvider>;
+  return (
+    <CreateUser>
+      <RouterProvider router={router}></RouterProvider>
+    </CreateUser>
+  );
 }
 
 export default App;
