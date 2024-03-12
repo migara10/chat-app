@@ -18,7 +18,7 @@ const userSchema = mongoose.Schema(
       required: [true, "Password required"],
       minLength: [4, "Password must be 8 characters"],
     },
-    pic: { type: String, default: "avatar.jpg" },
+    imgUrl: { type: String, default: "avatar.jpg" },
   },
   {
     timestamps: true,
