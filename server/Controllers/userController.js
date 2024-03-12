@@ -2,10 +2,11 @@ import UserModel from "./../models/user.model.js";
 import handleError from "../utils/errorHandler.js";
 import generateToken from "../utils/Tokens.js";
 import bcrypt from "bcrypt";
+import cloudinaryService from "./../utils/cloudinaryService.js";
 
 const registerUser = async (req, res) => {
   try {
-    const { name, email, password } = req.body;
+    const { name, email, password, file } = req.body;
     // Hash the password
     const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -13,11 +14,20 @@ const registerUser = async (req, res) => {
       name,
       email,
       password: hashedPassword,
-      pic: req.file ? req.file.path.replace(/\\/g, "/") : null,
+      imgUrl: file || "avatar.jpg",
     });
     await newUser.save();
     res.status(201).json({ message: "User registered successfully" });
   } catch (error) {
+    const publicId = req.body.public_id;
+
+    if (!publicId) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Public ID is required." });
+    }
+
+    await cloudinaryService(publicId); // delete cloudinary image
     handleError(error, res); // get error messages
   }
 };
@@ -58,27 +68,31 @@ const loginUser = async (req, res) => {
   }
 };
 
-const gelAllUsers = async (req, res) => {
-  const keyWord = req.query.search
-    ? {
-        $or: [
-          { name: { $regex: req.query.search, $options: "i" } },
-          { email: { $regex: req.query.search, $options: "i" } },
-        ],
-      }
-    : {};
+const getAllUsers = async (req, res) => {
+  try {
+    const userId = req.query.userId;
+    const search = req.query.search || ""; // If search parameter is not provided, default to empty string
+    const keyWord = search
+      ? {
+          $or: [
+            { name: { $regex: search, $options: "i" } }, // Case-insensitive search for name
+            { email: { $regex: search, $options: "i" } }, // Case-insensitive search for email
+          ],
+        }
+      : {};
+    const users = await UserModel.find(keyWord).find({
+      _id: { $ne: userId },
+    });
+    // const users = await UserModel.find(keyWord);
 
-  /* const users = await UserModel.find(keyWord).find({
-    _id: { $ne: req.user._id },
-  }); */
-  const users = await UserModel.find(keyWord);
-
-  
-  res.status(200).send({ message: users });
+    res.status(200).send(users);
+  } catch (error) {
+    handleError(error, res); // get error messages
+  }
 };
 
 export default {
   registerUser,
   loginUser,
-  gelAllUsers,
+  getAllUsers,
 };
