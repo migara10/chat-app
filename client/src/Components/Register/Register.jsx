@@ -23,7 +23,7 @@ const Register = ({ handleLogin }) => {
       .email("Invalid Email format"),
     password: Yup.string()
       .required("")
-      .matches(/[a-zA-Z]/, 'Password must need one character')
+      .matches(/[a-zA-Z]/, "Password must need one character")
       .min(4, "Password must be 8 characters"),
     conformPassword: Yup.string().oneOf(
       [Yup.ref("password"), null],
@@ -54,16 +54,42 @@ const Register = ({ handleLogin }) => {
     setFIle(img);
   };
 
-  const registerUser = async (user) => {
+  
+
+  const registerUser = async () => {
+    const formData = new FormData();
+    if (imgUrl === undefined) {
+      toast.error("please select image");
+      return;
+    }
+    if (imgUrl.type === "image/jpeg" || imgUrl.type === "image/png") {
+      formData.append("file", imgUrl);
+      formData.append("upload_preset", "chat-app");
+      formData.append("cloud_name", "dxpnr60tj");
+      fetch("https://api.cloudinary.com/v1_1/dxpnr60tj/image/upload", {
+        method: "post",
+        body: formData,
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          console.log(data);
+        }).catch(error => {
+          console.log(error)
+        });
+    }else{
+      toast.error("please select image");
+    }
+  }
+ /*  const registerUser = async (user) => {
     const { conformPassword, ...data } = user;
 
     const formData = new FormData();
     formData.append("file", imgUrl);
-    
+
     Object.keys(data).forEach((key) => {
       formData.append(key, data[key]);
     });
-    
+
     await axios
       .post("/user/register", formData)
       .then((res) => {
@@ -72,7 +98,7 @@ const Register = ({ handleLogin }) => {
       .catch((error) => {
         toast.error(error.response.data.message);
       });
-  };
+  }; */
 
   return (
     <div className="container mx-auto">
