@@ -3,6 +3,7 @@ import axios from "./../auth/axiosInstance.js";
 import { Button } from "@chakra-ui/react";
 import { useUser } from "../UserContext.jsx";
 import { color } from "framer-motion";
+import axiosInstance from "./../auth/axiosInstance.js";
 
 function Chat() {
   const [chats, setChats] = useState();
@@ -16,15 +17,30 @@ function Chat() {
   }, []); // Include search in the dependency array to re-fetch chats when search changes
 
   const fetchChats = async (key) => {
-    try {
-      const currentUser = JSON.parse(localStorage.getItem("user"));
-      const response = await axios.get(
-        `/user?userId=${currentUser._id}&search=${search}`
-      );
-      setUsers(response.data);
-    } catch (error) {
-      console.log(error);
+    const currentUser = JSON.parse(localStorage.getItem("user"));
+    await axiosInstance
+      .get(`/user?userId=${currentUser._id}&search=${search}`)
+      .then((response) => {
+        setUsers(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  const triggerChat = async (data) => {
+    const chatObj = {
+      adminId: userData._id,
+      userId: data._id
     }
+    await axiosInstance
+      .post("/chat", chatObj)
+      .then((response) => {
+        setChats(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
   return (
     <div>
@@ -35,7 +51,7 @@ function Chat() {
             {users &&
               users.map((user) => (
                 <div key={user._id}>
-                  <p>{user.name}</p>
+                  <p onClick={() => triggerChat(user)}>{user.name}</p>
                 </div>
               ))}
           </div>
