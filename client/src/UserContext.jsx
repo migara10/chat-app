@@ -10,12 +10,17 @@ export const CreateUser = ({ children }) => {
     setUserDataUser(storedData);
   }, []);
 
+  const updateUser = (newUser) => {
+    setUserDataUser(newUser);
+    localStorage.setItem("user", JSON.stringify(newUser));
+  };
+
   const logOutUser = () => {
     localStorage.clear();
   };
 
   return (
-    <UserContext.Provider value={{ userData, logOutUser }}>
+    <UserContext.Provider value={{ userData, logOutUser, updateUser }}>
       {children}
     </UserContext.Provider>
   );
