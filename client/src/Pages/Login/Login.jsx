@@ -6,10 +6,12 @@ import { Toaster } from "react-hot-toast";
 import toast from "react-hot-toast";
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import { useUser } from "./../../UserContext.jsx";
 
 import styles from "../../styles/Login.module.scss";
 
 const Login = ({ handleLogin }) => {
+  const { updateUser } = useUser(); // use context
   useEffect(() => {localStorage.clear()}, [])
   
   const navigate = useNavigate();
@@ -44,6 +46,7 @@ const Login = ({ handleLogin }) => {
       .then((res) => {
         const { accessToken, refreshToken, message, user } = res.data;
         localStorage.setItem("accessToken", accessToken);
+        updateUser(user);
         localStorage.setItem("refreshToken", refreshToken);
         localStorage.setItem("user", JSON.stringify(user));
 

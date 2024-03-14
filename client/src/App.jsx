@@ -4,8 +4,8 @@ import {
   Navigate,
 } from "react-router-dom";
 import "./App.css";
-import Home from "./Components/Home";
-import Chat from "./Components/Chat";
+import Home from "./Pages/Home";
+import Chat from "./Pages/Chat";
 import axios from "axios";
 axios.defaults.url = "http://localhost:5000";
 

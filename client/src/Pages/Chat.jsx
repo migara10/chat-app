@@ -1,9 +1,20 @@
 import React, { useEffect, useState } from "react";
 import axios from "./../auth/axiosInstance.js";
-import { Button } from "@chakra-ui/react";
 import { useUser } from "../UserContext.jsx";
 import { color } from "framer-motion";
 import axiosInstance from "./../auth/axiosInstance.js";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet"
+
+import { Button } from "@/components/ui/button"
+
+
 
 function Chat() {
   const [chats, setChats] = useState();
@@ -31,8 +42,8 @@ function Chat() {
   const triggerChat = async (data) => {
     const chatObj = {
       adminId: userData._id,
-      userId: data._id
-    }
+      userId: data._id,
+    };
     await axiosInstance
       .post("/chat", chatObj)
       .then((response) => {
@@ -44,6 +55,20 @@ function Chat() {
   };
   return (
     <div>
+      <Sheet>
+  <SheetTrigger>Open</SheetTrigger>
+  <SheetContent>
+    <SheetHeader>
+      <SheetTitle>Are you absolutely sure?</SheetTitle>
+      <SheetDescription>
+        This action cannot be undone. This will permanently delete your account
+        and remove your data from our servers.
+      </SheetDescription>
+    </SheetHeader>
+  </SheetContent>
+</Sheet>
+
+
       <div>
         {userData && (
           <div>
