@@ -10,6 +10,7 @@ import axios from "axios";
 axios.defaults.url = "http://localhost:5000";
 
 import { CreateUser } from "./UserContext";
+import Dashboard from "./Pages/Dashboard/Dashboard";
 
 function App() {
   // routers
@@ -21,6 +22,10 @@ function App() {
     {
       path: "/chats",
       element: <Chat />,
+    },
+    {
+      path: "/dashboard",
+      element: <Dashboard />,
     },
     {
       path: "*",
