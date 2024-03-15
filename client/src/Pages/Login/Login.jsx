@@ -51,7 +51,7 @@ const Login = ({ handleLogin }) => {
         localStorage.setItem("user", JSON.stringify(user));
 
         toast.success(message);
-        navigate("/chats");
+        navigate("/dashboard");
       })
       .catch((error) => {
         toast.error(error.response.data.message);

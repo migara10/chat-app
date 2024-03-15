@@ -4,6 +4,7 @@ const UserContext = createContext();
 
 export const CreateUser = ({ children }) => {
   const [userData, setUserDataUser] = useState();
+  
 
   useEffect(() => {
     const storedData = JSON.parse(localStorage.getItem("user"));
@@ -17,6 +18,7 @@ export const CreateUser = ({ children }) => {
 
   const logOutUser = () => {
     localStorage.clear();
+    
   };
 
   return (
