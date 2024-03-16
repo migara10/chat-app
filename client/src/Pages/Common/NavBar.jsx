@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { useNavigate } from 'react-router-dom';
 import { Toaster } from "react-hot-toast";
 import toast from "react-hot-toast";
+import SideBar from "./SideBar.jsx";
 
 const NavBar = () => {
   let navigate = useNavigate();
@@ -20,7 +21,7 @@ const NavBar = () => {
     toast.success("Logout");
     setTimeout(() => {
       navigate('/')
-    },1000)
+    },500)
   };
 
   return (
@@ -28,6 +29,7 @@ const NavBar = () => {
       <Toaster position="top-center" reverseOrder={false} />
       {userData && (
         <div className="flex items-center justify-between h-full">
+          <SideBar />
           <p>Hi {userData.name},</p>
 
           <Popover>
