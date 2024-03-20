@@ -1,9 +1,10 @@
 import express from "express";
 import chatController from "./../Controllers/chatController.js";
 
-const route = express.Router();
+const router = express.Router();
 
-route.post("/", chatController.createChat);
-route.get("/", chatController.fetchChat);
+router.post("/", chatController.createChat);
+router.get("/:id", chatController.fetchChat);
+router.get("/active-user", chatController.getActiveUsers);
 
-export default route;
+export default router;

@@ -7,21 +7,24 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 import toast from "react-hot-toast";
 import SideBar from "./SideBar.jsx";
 
-const NavBar = () => {
+const NavBar = ({ triggerChatFunction }) => {
   let navigate = useNavigate();
   const { userData, logOutUser } = useUser();
 
   const userLogOut = () => {
-    logOutUser()
+    logOutUser();
     toast.success("Logout");
     setTimeout(() => {
-      navigate('/')
-    },500)
+      navigate("/");
+    }, 500);
+  };
+  const parentFunction = () => {
+    triggerChatFunction();
   };
 
   return (
@@ -29,7 +32,7 @@ const NavBar = () => {
       <Toaster position="top-center" reverseOrder={false} />
       {userData && (
         <div className="flex items-center justify-between h-full">
-          <SideBar />
+          <SideBar parentFunction={parentFunction} r />
           <p>Hi {userData.name},</p>
 
           <Popover>

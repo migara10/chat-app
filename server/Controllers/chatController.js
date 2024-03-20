@@ -19,15 +19,11 @@ const createChat = async (req, res) => {
     .populate("users", "-password")
     .populate("latestMessage");
 
-
   /* isChat = await UserModel.populate(isChat, {
     path: "latestMessage"
   }); */
   const existingChat = await ChatModel.findOne({
-    $and: [
-        {users: { $all: [adminId, userId] }},
-        {isGroupChat: false }
-    ]
+    $and: [{ users: { $all: [adminId, userId] } }, { isGroupChat: false }],
   });
 
   if (existingChat) {
@@ -39,16 +35,15 @@ const createChat = async (req, res) => {
       users: [adminId, userId],
     };
 
-    try{
-        const chatCreate = await ChatModel.create(chatData);
-        
-        const FullChat = await ChatModel.findOne({_id: chatCreate._id}).populate(
-            "users",
-            "-password"
-        )
-        res.status(200).send(FullChat)
-    }catch(error){
-        console.log(error)
+    try {
+      const chatCreate = await ChatModel.create(chatData);
+
+      const FullChat = await ChatModel.findOne({
+        _id: chatCreate._id,
+      }).populate("users", "-password");
+      res.status(200).send(FullChat);
+    } catch (error) {
+      console.log(error);
     }
   }
 
@@ -58,9 +53,24 @@ const createChat = async (req, res) => {
   } */
 };
 
-const fetchChat = async () => {};
+const fetchChat = async (req, res) => {
+  try {
+    const userId = req.params.id;
+    const existingChat = await ChatModel.find({
+      $and: [{ users: { $in: [userId] } }],
+    }).populate("users", "-password")
+    .populate("latestMessage");;
+    const filteredData = existingChat.filter(chat => chat.users.some(user => user._id === userId));
+    return res.status(200).send({ existingChat });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const getActiveUsers = async () => {};
 
 export default {
   createChat,
   fetchChat,
+  getActiveUsers,
 };

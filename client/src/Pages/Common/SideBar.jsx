@@ -11,12 +11,12 @@ import {
 import axiosInstance from "./../../auth/axiosInstance.js";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input"
+import { Input } from "@/components/ui/input";
 
 import { useUser } from "@/UserContext.jsx";
 
-const SideBar = () => {
-    const { userData } = useUser();
+const SideBar = ({parentFunction}) => {
+  const { userData } = useUser();
   const [users, setUsers] = useState();
   const [chats, setChats] = useState();
   const [search, setSearch] = useState("");
@@ -24,10 +24,11 @@ const SideBar = () => {
     fetchChats();
   }, []);
 
+
   const fetchChats = async (e) => {
     const currentUser = JSON.parse(localStorage.getItem("user"));
     await axiosInstance
-      .get(`/user?userId=${currentUser._id}&search=${e.target.value}`)
+      .get(`/user?userId=${currentUser._id}&search=${ e?.target.value || ""}`)
       .then((response) => {
         setUsers(response.data);
       })
@@ -45,6 +46,7 @@ const SideBar = () => {
       .post("/chat", chatObj)
       .then((response) => {
         setChats(response.data);
+        parentFunction();
       })
       .catch((error) => {
         console.log(error);
@@ -57,7 +59,7 @@ const SideBar = () => {
       <SheetContent side={"left"} className="w-[200px]">
         <SheetHeader>
           <SheetTitle>Find Friends</SheetTitle>
-          <input onChange={fetchChats} placeholder="search..."/>
+          <input onChange={fetchChats} placeholder="search..." />
 
           <SheetDescription>
             <div>
@@ -65,12 +67,20 @@ const SideBar = () => {
                 users.map((user) => (
                   <div key={user._id} className="mb-2">
                     <div>
-                      <SheetClose false className="flex items-center">
-                          <Avatar className="opacity-100 d" onClick={() => triggerChat(user)}>
+                      <SheetClose>
+                        <div
+                          false
+                          className="flex items-center"
+                          onClick={() => triggerChat(user)}
+                        >
+                          <Avatar className="opacity-100 d">
                             <AvatarImage src={user.imgUrl} />
                             <AvatarFallback>US</AvatarFallback>
                           </Avatar>
-                          <p className="ml-3 font-semibold text-black">{user.name}</p>
+                          <p className="ml-3 font-semibold text-black">
+                            {user.name}
+                          </p>
+                        </div>
                       </SheetClose>
                     </div>
                   </div>
