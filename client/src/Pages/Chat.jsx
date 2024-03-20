@@ -8,6 +8,7 @@ const Chat = React.forwardRef((props, ref) => {
   const { userData } = useUser();
   const [activeUsers, setActiveUsers] = useState([]);
 
+
   useEffect(() => {
     setTimeout(() => {
       fetchUsers();
@@ -36,7 +37,10 @@ const Chat = React.forwardRef((props, ref) => {
       <div className="h-[500px] rounded-lg w-[200px] bg-yellow-50">
         {activeUsers &&
           activeUsers.map((user) => (
-            <div key={user._id} className="flex items-center justify-between p-2">
+            <div
+              key={user._id}
+              className="flex items-center justify-between p-2"
+            >
               <Avatar>
                 <AvatarImage src={user.users[1].imgUrl} />
                 <AvatarFallback>US</AvatarFallback>
