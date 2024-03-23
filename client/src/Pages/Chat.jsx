@@ -3,6 +3,7 @@ import { useUser } from "../UserContext.jsx";
 import axiosInstance from "./../auth/axiosInstance.js";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ImBin } from "react-icons/im";
+import axios from "axios";
 
 const Chat = React.forwardRef((props, ref) => {
   const { userData } = useUser();
@@ -31,9 +32,17 @@ const Chat = React.forwardRef((props, ref) => {
       });
   };
 
+  const deleteChat = async (id) => {
+    axiosInstance.delete(`/chat/${id}`).then(res => {
+      console.log(res)
+    }).catch(error => {
+      console.log(error)
+    })
+  }
+
   return (
     <div>
-      <div onClick={fetchUsers}>Chat</div>
+      <div onClick={fetchUsers}>Chat1</div>
       <div className="h-[500px] rounded-lg w-[200px] bg-yellow-50">
         {activeUsers &&
           activeUsers.map((user) => (
@@ -46,7 +55,7 @@ const Chat = React.forwardRef((props, ref) => {
                 <AvatarFallback>US</AvatarFallback>
               </Avatar>
               {user.users[1].name}
-              <ImBin className="cursor-pointer " />
+              <ImBin onClick={() => deleteChat(user._id)} className="cursor-pointer " />
             </div>
           ))}
       </div>
