@@ -6,5 +6,6 @@ const router = express.Router();
 router.post("/", chatController.createChat);
 router.get("/:id", chatController.fetchChat);
 router.get("/active-user", chatController.getActiveUsers);
+router.delete("/:id", chatController.deleteChatById);
 
 export default router;

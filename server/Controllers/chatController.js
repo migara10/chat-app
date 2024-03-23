@@ -58,9 +58,9 @@ const fetchChat = async (req, res) => {
     const userId = req.params.id;
     const existingChat = await ChatModel.find({
       $and: [{ users: { $in: [userId] } }],
-    }).populate("users", "-password")
-    .populate("latestMessage");;
-    const filteredData = existingChat.filter(chat => chat.users.some(user => user._id === userId));
+    })
+      .populate("users", "-password")
+      .populate("latestMessage");
     return res.status(200).send({ existingChat });
   } catch (error) {
     console.log(error);
@@ -69,8 +69,18 @@ const fetchChat = async (req, res) => {
 
 const getActiveUsers = async () => {};
 
+const deleteChatById = async (req, res) => {
+  try {
+    const userId = req.params.id;
+    console.log(userId);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 export default {
   createChat,
   fetchChat,
   getActiveUsers,
+  deleteChatById,
 };
