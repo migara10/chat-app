@@ -4,11 +4,12 @@ import axiosInstance from "./../auth/axiosInstance.js";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ImBin } from "react-icons/im";
 import axios from "axios";
+import ChatPopup from "./ChatPopup.jsx";
+import { Drawer, DrawerTrigger } from "@/components/ui/drawer";
 
 const Chat = React.forwardRef((props, ref) => {
   const { userData } = useUser();
   const [activeUsers, setActiveUsers] = useState([]);
-
 
   useEffect(() => {
     setTimeout(() => {
@@ -22,6 +23,8 @@ const Chat = React.forwardRef((props, ref) => {
   }));
 
   const fetchUsers = () => {
+    if (!userData || !userData._id) return;
+
     axiosInstance
       .get(`/chat/${userData._id}`)
       .then((res) => {
@@ -33,12 +36,15 @@ const Chat = React.forwardRef((props, ref) => {
   };
 
   const deleteChat = async (id) => {
-    axiosInstance.delete(`/chat/${id}`).then(res => {
-      console.log(res)
-    }).catch(error => {
-      console.log(error)
-    })
-  }
+    axiosInstance
+      .delete(`/chat/${id}`)
+      .then((res) => {
+        setActiveUsers(activeUsers.filter((chat) => chat._id !== id));
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
 
   return (
     <div>
@@ -50,12 +56,20 @@ const Chat = React.forwardRef((props, ref) => {
               key={user._id}
               className="flex items-center justify-between p-2"
             >
-              <Avatar>
-                <AvatarImage src={user.users[1].imgUrl} />
-                <AvatarFallback>US</AvatarFallback>
-              </Avatar>
-              {user.users[1].name}
-              <ImBin onClick={() => deleteChat(user._id)} className="cursor-pointer " />
+              <Drawer>
+                <DrawerTrigger>
+                  <Avatar>
+                    <AvatarImage src={user.users[1].imgUrl} />
+                    <AvatarFallback>US</AvatarFallback>
+                  </Avatar>
+                </DrawerTrigger>
+                {user.users[1].name}
+                <ImBin
+                  onClick={() => deleteChat(user._id)}
+                  className="cursor-pointer "
+                />
+                <ChatPopup user={user} />
+              </Drawer>
             </div>
           ))}
       </div>
