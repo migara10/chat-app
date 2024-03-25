@@ -61,7 +61,7 @@ const fetchChat = async (req, res) => {
     })
       .populate("users", "-password")
       .populate("latestMessage");
-    return res.status(200).send({ existingChat });
+    res.status(200).send({ existingChat });
   } catch (error) {
     console.log(error);
   }
@@ -72,9 +72,11 @@ const getActiveUsers = async () => {};
 const deleteChatById = async (req, res) => {
   try {
     const userId = req.params.id;
-    console.log(userId);
+    const deleteData = await ChatModel.deleteOne({ _id: userId });
+    res.status(200).send({ message: "chat delete successfully!" });
+
   } catch (error) {
-    console.log(error);
+    res.status(500).send({ message: "internal server error!" });
   }
 };
 
