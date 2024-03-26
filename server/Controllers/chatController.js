@@ -1,6 +1,7 @@
 import ChatModel from "./../models/chat.model.js";
 import handleError from "../utils/errorHandler.js";
 import UserModel from "../models/user.model.js";
+import chatModel from "./../models/chat.model.js";
 
 const createChat = async (req, res) => {
   const { adminId, userId } = req.body;
@@ -19,14 +20,16 @@ const createChat = async (req, res) => {
     .populate("users", "-password")
     .populate("latestMessage");
 
-  /* isChat = await UserModel.populate(isChat, {
-    path: "latestMessage"
-  }); */
-  const existingChat = await ChatModel.findOne({
-    $and: [{ users: { $all: [adminId, userId] } }, { isGroupChat: false }],
+  isChat = await UserModel.populate(isChat, {
+    path: "latestMessage.sender",
+    select: "name imgUrl email",
   });
 
-  if (existingChat) {
+  /*  const existingChat = await ChatModel.findOne({
+    $and: [{ users: { $all: [adminId, userId] } }, { isGroupChat: false }],
+  }); */
+
+  if (isChat.length > 0) {
     res.send(isChat[0]);
   } else {
     var chatData = {
@@ -60,10 +63,41 @@ const fetchChat = async (req, res) => {
       $and: [{ users: { $in: [userId] } }],
     })
       .populate("users", "-password")
-      .populate("latestMessage");
+      .populate("latestMessage")
+      .populate("groupAdmin", "-password");
     res.status(200).send({ existingChat });
   } catch (error) {
     console.log(error);
+  }
+};
+
+const createGroupChat = async (req, res) => {
+  if (!req.body.users || req.body.name) {
+    return res.status(400).send({ message: "please fill all the felids" });
+  }
+
+  var users = JSON.parse(req.body.users);
+
+  if (users.length > 2) {
+    return res.status(400).send("Group Chat need to more than two users!");
+  }
+  users.push(req.user);
+  try {
+    const groupChat = await chatModel.create({
+      chatNAme: req.body.name,
+      users,
+      isGroupChat: true,
+      groupAdmin: req.user,
+    });
+    const fullGroupChat = await chatModel
+      .findOne({ _id: groupChat._id })
+      .populate("users", "-password")
+      .populate("groupAdmin", "-password");
+
+      res.status(200).json(fullGroupChat)
+  } catch (error) {
+    console.log(error);
+    res.status(400);
   }
 };
 
@@ -74,7 +108,6 @@ const deleteChatById = async (req, res) => {
     const userId = req.params.id;
     const deleteData = await ChatModel.deleteOne({ _id: userId });
     res.status(200).send({ message: "chat delete successfully!" });
-
   } catch (error) {
     res.status(500).send({ message: "internal server error!" });
   }
@@ -85,4 +118,5 @@ export default {
   fetchChat,
   getActiveUsers,
   deleteChatById,
+  createGroupChat,
 };

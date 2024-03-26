@@ -5,6 +5,9 @@ const router = express.Router();
 
 router.post("/", chatController.createChat);
 router.get("/:id", chatController.fetchChat);
+router.post('/group', chatController.createGroupChat);
+
+
 router.get("/active-user", chatController.getActiveUsers);
 router.delete("/:id", chatController.deleteChatById);
 
