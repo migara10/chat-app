@@ -20,6 +20,7 @@ const ChatPopup = ({user}) => {
           <DrawerFooter>
             <Button>Submit</Button>
             <p>{user.users[1].name}</p>
+            
             <DrawerClose>
               <Button variant="outline">Cancel</Button>
             </DrawerClose>
