@@ -6,7 +6,6 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 import toast from "react-hot-toast";
@@ -33,7 +32,7 @@ const NavBar = ({ triggerChatFunction }) => {
       {userData && (
         <div className="flex items-center justify-between h-full">
           <SideBar parentFunction={parentFunction} r />
-          <p>Hi {userData.name},</p>
+          <div>Hi {userData.name},</div>
 
           <Popover>
             <PopoverTrigger>
@@ -43,7 +42,7 @@ const NavBar = ({ triggerChatFunction }) => {
               </Avatar>
             </PopoverTrigger>
             <PopoverContent className="w-[120px]">
-              <p onClick={userLogOut}>Logout</p>
+              <div onClick={userLogOut}>Logout</div>
             </PopoverContent>
           </Popover>
         </div>

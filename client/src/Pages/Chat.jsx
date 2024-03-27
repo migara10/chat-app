@@ -6,6 +6,16 @@ import { ImBin } from "react-icons/im";
 import axios from "axios";
 import ChatPopup from "./ChatPopup.jsx";
 import { Drawer, DrawerTrigger } from "@/components/ui/drawer";
+import { Button } from "@/components/ui/button.jsx";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import GroupChatPopup from "./GroupChat/GroupChatPopup.jsx";
 
 const Chat = React.forwardRef((props, ref) => {
   const { userData } = useUser();
@@ -50,6 +60,11 @@ const Chat = React.forwardRef((props, ref) => {
     <div>
       <div onClick={fetchUsers}>Chat1</div>
       <div className="h-[500px] rounded-lg w-[200px] bg-yellow-50">
+        <div className="flex justify-center group-chat">
+          <div>
+          <GroupChatPopup />
+          </div>
+        </div>
         {activeUsers &&
           activeUsers.map((user) => (
             <div
