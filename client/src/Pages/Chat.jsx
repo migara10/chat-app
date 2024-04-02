@@ -71,7 +71,23 @@ const Chat = React.forwardRef((props, ref) => {
               key={user._id}
               className="flex items-center justify-between p-2"
             >
-              <Drawer>
+              {user.isGroupChat && (
+                <Drawer >
+                <DrawerTrigger>
+                  <Avatar>
+                    <AvatarFallback>{user.chatName.slice(0, 2)}</AvatarFallback>
+                  </Avatar>
+                </DrawerTrigger>
+                {user.chatName}
+                <ImBin
+                  onClick={() => deleteChat(user._id)}
+                  className="cursor-pointer "
+                />
+                <ChatPopup user={user} />
+              </Drawer>
+              )}
+              {!user.isGroupChat && (
+                <Drawer >
                 <DrawerTrigger>
                   <Avatar>
                     <AvatarImage src={user.users[1].imgUrl} />
@@ -85,6 +101,7 @@ const Chat = React.forwardRef((props, ref) => {
                 />
                 <ChatPopup user={user} />
               </Drawer>
+              )}
             </div>
           ))}
       </div>

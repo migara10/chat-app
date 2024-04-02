@@ -39,6 +39,7 @@ const SideBar = ({ parentFunction }) => {
   };
 
   const triggerChat = async (data) => {
+    if (!userData || !userData._id) return;
     const chatObj = {
       adminId: userData._id,
       userId: data._id,
