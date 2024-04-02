@@ -47,8 +47,14 @@ const GroupChatPopup = () => {
     addGroupChat(groupChat.filter((u) => u._id !== user._id));
   };
 
-  const createGroupChat = (e) => {
+  const createGroupChat = async  (e) => {
+    if (!userData || !userData._id) return;
+    const data = {
+      name: groupName,
+      users: groupChat
+    }
     e.preventDefault();
+    await axiosInstance.post(`/chat/group/${userData._id}`, {data})
     console.log("create", groupName, groupChat);
     setOpen(false)
   };
@@ -56,10 +62,10 @@ const GroupChatPopup = () => {
   return (
     <div>
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogTrigger>Open</DialogTrigger>
+        <DialogTrigger>Create Group Chat</DialogTrigger>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Are you absolutely sure?</DialogTitle>
+            <DialogTitle>Create Group Chat</DialogTitle>
             <div className="flex">
               {groupChat &&
                 groupChat.map((user) => (

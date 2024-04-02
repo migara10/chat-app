@@ -72,22 +72,25 @@ const fetchChat = async (req, res) => {
 };
 
 const createGroupChat = async (req, res) => {
-  if (!req.body.users || req.body.name) {
+  const userId = req.params.id;
+  const data = req.body.data
+  
+  if (!data.users || !data.name) {
     return res.status(400).send({ message: "please fill all the felids" });
   }
 
-  var users = JSON.parse(req.body.users);
-
-  if (users.length > 2) {
+  var users = data.users;
+  console.log(users)
+  if (users.length < 2) {
     return res.status(400).send("Group Chat need to more than two users!");
   }
-  users.push(req.user);
+  users.push(userId);
   try {
     const groupChat = await chatModel.create({
-      chatNAme: req.body.name,
+      chatName: data.name,
       users,
       isGroupChat: true,
-      groupAdmin: req.user,
+      groupAdmin: userId,
     });
     const fullGroupChat = await chatModel
       .findOne({ _id: groupChat._id })
