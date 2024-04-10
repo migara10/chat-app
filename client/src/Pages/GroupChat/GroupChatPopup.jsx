@@ -15,12 +15,12 @@ import { useUser } from "@/UserContext.jsx";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import SelectedUSers from "./SelectedUSers";
 
-const GroupChatPopup = () => {
+const GroupChatPopup = ({ refreshData }) => {
   const { userData } = useUser();
   const [users, setUsers] = useState([]);
   const [groupChat, addGroupChat] = useState([]);
   const [groupName, setGroupName] = useState("");
-  const [open, setOpen] = useState(false)
+  const [open, setOpen] = useState(false);
 
   useEffect(() => {
     fetchUsers();
@@ -47,16 +47,24 @@ const GroupChatPopup = () => {
     addGroupChat(groupChat.filter((u) => u._id !== user._id));
   };
 
-  const createGroupChat = async  (e) => {
+  const createGroupChat = async (e) => {
     if (!userData || !userData._id) return;
     const data = {
       name: groupName,
-      users: groupChat
-    }
+      users: groupChat,
+    };
     e.preventDefault();
-    await axiosInstance.post(`/chat/group/${userData._id}`, {data})
-    console.log("create", groupName, groupChat);
-    setOpen(false)
+    await axiosInstance
+      .post(`/chat/group/${userData._id}`, { data })
+      .then((res) => {
+        setOpen(false);
+        refreshData();
+        addGroupChat([]);
+        setGroupName("");
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   return (
