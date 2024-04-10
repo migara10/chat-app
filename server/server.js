@@ -6,6 +6,7 @@ import connectToDatabase from './database/connection.js';
 
 import user from './Router/userRoute.js';
 import chat from './Router/chatRouter.js';
+import message from './Router/messageRouter.js'
 
 dotenv.config();
 
@@ -15,7 +16,7 @@ dotenv.config();
 const app = express();
 app.use(express.json());
 app.use(cors());
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5700;
 
 app.get('/', (req, res) => {
     res.send("API works");

@@ -56,13 +56,17 @@ const Chat = React.forwardRef((props, ref) => {
       });
   };
 
+  const refreshData = () => {
+    fetchUsers();
+  };
+
   return (
     <div>
       <div onClick={fetchUsers}>Chat1</div>
       <div className="h-[500px] rounded-lg w-[200px] bg-yellow-50">
         <div className="flex justify-center group-chat">
           <div>
-          <GroupChatPopup />
+            <GroupChatPopup refreshData={refreshData} />
           </div>
         </div>
         {activeUsers &&
@@ -72,35 +76,37 @@ const Chat = React.forwardRef((props, ref) => {
               className="flex items-center justify-between p-2"
             >
               {user.isGroupChat && (
-                <Drawer >
-                <DrawerTrigger>
-                  <Avatar>
-                    <AvatarFallback>{user.chatName.slice(0, 2)}</AvatarFallback>
-                  </Avatar>
-                </DrawerTrigger>
-                {user.chatName}
-                <ImBin
-                  onClick={() => deleteChat(user._id)}
-                  className="cursor-pointer "
-                />
-                <ChatPopup user={user} />
-              </Drawer>
+                <Drawer>
+                  <DrawerTrigger>
+                    <Avatar>
+                      <AvatarFallback>
+                        {user.chatName.slice(0, 2)}
+                      </AvatarFallback>
+                    </Avatar>
+                  </DrawerTrigger>
+                  {user.chatName}
+                  <ImBin
+                    onClick={() => deleteChat(user._id)}
+                    className="cursor-pointer "
+                  />
+                  <ChatPopup user={user} className="w-1/2" />
+                </Drawer>
               )}
               {!user.isGroupChat && (
-                <Drawer >
-                <DrawerTrigger>
-                  <Avatar>
-                    <AvatarImage src={user.users[1].imgUrl} />
-                    <AvatarFallback>US</AvatarFallback>
-                  </Avatar>
-                </DrawerTrigger>
-                {user.users[1].name}
-                <ImBin
-                  onClick={() => deleteChat(user._id)}
-                  className="cursor-pointer "
-                />
-                <ChatPopup user={user} />
-              </Drawer>
+                <Drawer>
+                  <DrawerTrigger>
+                    <Avatar>
+                      <AvatarImage src={user.users[1].imgUrl} />
+                      <AvatarFallback>US</AvatarFallback>
+                    </Avatar>
+                  </DrawerTrigger>
+                  {user.users[1].name}
+                  <ImBin
+                    onClick={() => deleteChat(user._id)}
+                    className="cursor-pointer "
+                  />
+                  <ChatPopup user={user} className="w-1/2" />
+                </Drawer>
               )}
             </div>
           ))}
